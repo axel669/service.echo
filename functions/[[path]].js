@@ -16,6 +16,21 @@ export const onRequest = async ({ request }) => {
         )
     }
 
+    if (url.pathname.startsWith("/delay/") === true) {
+        const timeText = url.pathname.split("/")[2]
+        const time = parseInt(timeText)
+
+        if (isNaN(time) === true || time <= 0 || time > 20) {
+            return Response.json(
+                { error: "Invalid time to wait" },
+                { status: 400 },
+            )
+        }
+        await new Promise(
+            resolve => setTimeout(resolve, time * 1000)
+        )
+    }
+
     const parser = parsers[request.headers.get("content-type")] ?? parsers.default
     const details = {
         method: request.method,
